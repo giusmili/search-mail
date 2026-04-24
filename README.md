@@ -73,7 +73,7 @@ AI_MODEL
 npm run dev
 ```
 
-L'application est disponible surun port `http://localhost:3000`.
+L'application est disponible sur un port `http://localhost:3000`.
 
 ---
 
