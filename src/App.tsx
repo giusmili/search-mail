@@ -8,9 +8,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || "" });
 
 interface VerificationResult {
   valid: boolean;
@@ -74,72 +71,16 @@ export default function App() {
     }
   };
 
-  const cleanLinkedInUrl = (url: string): string => {
-    if (!url) return "";
-    try {
-      // Double decoding for nested Google Search redirects
-      let decodedUrl = decodeURIComponent(url);
-      if (decodedUrl.includes('%')) decodedUrl = decodeURIComponent(decodedUrl);
-      
-      // If it's a google search redirect, extract the actual target URL
-      const googleMatch = decodedUrl.match(/[?&]url=([^&]+)/);
-      if (googleMatch) decodedUrl = decodeURIComponent(googleMatch[1]);
-
-      // Detect regional subdomains (fr.linkedin.com, etc) and handle /in/ or /pub/
-      // This regex captures only the unique slug
-      const profileMatch = decodedUrl.match(/(?:linkedin\.com\/(?:in|pub)\/)([^/?#& ]+)/i);
-      
-      if (profileMatch && profileMatch[1]) {
-        // Clean the slug (remove trailing slashes or spaces)
-        let slug = profileMatch[1].trim().replace(/\/$/, "");
-        return `https://www.linkedin.com/in/${slug}`;
-      }
-      
-      // Handle legacy /profile/view?id= formats
-      const idMatch = decodedUrl.match(/[?&]id=([^& ]+)/);
-      if (decodedUrl.includes('linkedin.com/profile/view') && idMatch) {
-         return `https://www.linkedin.com/in/${idMatch[1].trim()}`;
-      }
-
-      // Fallback: Strip everything after ? or # and ensure https
-      if (url.startsWith("http")) {
-        let clean = url.split("?")[0].split("#")[0].replace(/\/$/, "");
-        // Force www and https
-        clean = clean.replace(/^(https?:\/\/)?([a-z]{2}\.)?linkedin\.com/i, "https://www.linkedin.com");
-        return clean;
-      }
-      
-      return url;
-    } catch (e) {
-      // In case of any error, returning the original stripped of query params is safer than nothing
-      return url.split("?")[0];
-    }
-  };
   const findLinkedInProfiles = async (query: string) => {
     try {
-      const prompt = `Recherche le profil LinkedIn correspondant à l'adresse email : "${query}".
-Utilise Google Search pour trouver des résultats réels. N'invente aucun profil.
-Retourne UNIQUEMENT un tableau JSON (sans markdown, sans texte autour) avec les profils trouvés, ou [] si aucun résultat.
-Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/in/slug","location":"...","relevanceStatus":"high|medium|low","matchReason":"..."}]`;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: prompt,
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
+      const response = await fetch("/api/search-profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: query }),
       });
-
-      const text = response.text ?? "";
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      const parsed: any[] = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
-
-      const data = parsed.map(p => ({
-        ...p,
-        url: cleanLinkedInUrl(p.url),
-      })) as LinkedInProfile[];
-
-      setProfiles(data);
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : (data?.profiles ?? []);
+      setProfiles(list as LinkedInProfile[]);
     } catch (err) {
       console.error("LinkedIn search error:", err);
     } finally {
@@ -234,7 +175,9 @@ Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/
                     {result.score}
                     <span className="text-4xl absolute -top-2 -right-10">%</span>
                   </div>
-                  <div className="px-6 py-2 bg-[#1A1A1A] text-white text-[11px] uppercase tracking-[0.2em] font-bold italic rounded-full shadow-lg">
+                  <div className={`px-6 py-2 text-white text-[11px] uppercase tracking-[0.2em] font-bold italic rounded-full shadow-lg ${
+                    result.score >= 70 ? 'bg-green-700' : result.score >= 40 ? 'bg-amber-600' : 'bg-rose-700'
+                  }`}>
                     {result.valid ? "✓ Identifié" : "⚠ Anomalous"}
                   </div>
                   <p className="text-xs opacity-50 italic max-w-[200px] leading-relaxed">
@@ -259,20 +202,20 @@ Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/
             <div className="space-y-8">
               <h2 className="text-[10px] uppercase tracking-[0.4em] font-bold border-l-4 border-[#1A1A1A] pl-4">Technical Fingerprint</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-0.5 bg-[#1A1A1A]/10 border border-[#1A1A1A]/10">
-                <AuditBox 
-                  label="Bonne syntaxe" 
-                  value="Format" 
-                  status={result?.syntax ? "Pass" : result ? "Fail" : "Wait"} 
+                <AuditBox
+                  label="Bonne syntaxe"
+                  value="Format"
+                  status={result?.syntax ? "Validé" : result ? "Non valide" : "En cours"}
                 />
-                <AuditBox 
-                  label="Domaine valide" 
-                  value="Domaine" 
-                  status={result?.domain ? "Active" : result ? "Lost" : "Wait"} 
+                <AuditBox
+                  label="Domaine valide"
+                  value="Domaine"
+                  status={result?.domain ? "Activé" : result ? "Perdu" : "En cours"}
                 />
-                <AuditBox 
-                  label="Identification unique" 
-                  value="Securisé" 
-                  status={result?.valid ? "High" : result ? "Low" : "Wait"} 
+                <AuditBox
+                  label="Identification unique"
+                  value="Sécurisé"
+                  status={result?.valid ? "Moyen" : result ? "Bas" : "En cours"}
                 />
               </div>
             </div>
@@ -360,15 +303,23 @@ Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/
 }
 
 function AuditBox({ label, value, status }: { label: string, value: string, status: string }) {
-  const isPass = ["Pass", "Active", "High"].includes(status);
-  const isFail = ["Fail", "Lost", "Low"].includes(status);
-  
+  const PASS = ["Pass", "Active", "High", "Validé", "Activé", "Moyen"];
+  const FAIL = ["Fail", "Lost", "Low", "Non valide", "Perdu", "Bas"];
+  const isPass = PASS.includes(status);
+  const isFail = FAIL.includes(status);
+
+  const statusColor = isPass
+    ? "text-green-700"
+    : isFail
+    ? "text-rose-700"
+    : "opacity-20";
+
   return (
     <div className="bg-white p-8 space-y-6">
       <span className="block text-[9px] uppercase tracking-[0.3em] font-bold opacity-40 leading-none">{label}</span>
       <div className="flex items-baseline gap-3">
         <span className="text-3xl font-serif leading-none">{value}</span>
-        <span className={`text-[10px] font-bold italic uppercase tracking-widest ${isPass ? 'text-green-700' : isFail ? 'text-rose-700' : 'opacity-20'}`}>
+        <span className={`text-[10px] font-bold italic uppercase tracking-widest ${statusColor}`}>
           {status}
         </span>
       </div>
