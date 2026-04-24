@@ -350,7 +350,7 @@ Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/
         <footer className="pt-12 border-t border-[#1A1A1A]/20 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.4em] font-bold opacity-30 gap-4">
           <span>Confidential Intelligence Document</span>
           <div className="flex gap-8">
-            <span>© {new Date().getFullYear()} Insight Engine Labs</span>
+            <span>© {new Date().getFullYear()} LGC - Recherche &amp; développement</span>
             <span>Encoded Secure Protocol 0x{Math.floor(Math.random()*1000).toString(16).toUpperCase()}</span>
           </div>
         </footer>
