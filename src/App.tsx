@@ -183,8 +183,8 @@ Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/
         {/* Editorial Header */}
         <header className="flex flex-col md:flex-row justify-between items-baseline border-b border-[#1A1A1A] pb-6 mb-12">
           <div className="space-y-2">
-            <h1 className="text-6xl font-serif italic font-light tracking-tight">Insight Engine</h1>
-            <p className="text-[10px] uppercase tracking-[0.3em] font-semibold opacity-60">Verification & Intelligence d'adresse email</p>
+            <h1 className="text-6xl font-serif italic font-light tracking-tight">LGC - Insight Engine</h1>
+            <p className="text-[10px] uppercase tracking-[0.3em] font-semibold opacity-60">Verifiez ici une adresse mail</p>
           </div>
           <div className="text-right mt-4 md:mt-0 font-mono text-[10px] uppercase tracking-widest leading-relaxed">
 {/* <p className="font-bold">REF: AUDIT-{new Date().getFullYear()}-AI</p> */}
@@ -199,12 +199,12 @@ Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/
             
             {/* Verification Target Input */}
             <div>
-              <label className="text-[10px] uppercase tracking-[0.3em] block mb-4 font-bold opacity-50">Verification de mail</label>
+              <label className="text-[10px] uppercase tracking-[0.3em] block mb-4 font-bold opacity-50">Verification du mail</label>
               <div className="relative border-b border-[#1A1A1A] group">
                 <input
                   type="text"
                   className="w-full bg-transparent py-4 text-xl font-medium focus:outline-none placeholder:opacity-20 placeholder:italic transition-all uppercase tracking-tight"
-                  placeholder="Enter email or identity..."
+                  placeholder="Entrez un mail ou une identité..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
@@ -260,18 +260,18 @@ Format strict : [{"name":"...","headline":"...","url":"https://www.linkedin.com/
               <h2 className="text-[10px] uppercase tracking-[0.4em] font-bold border-l-4 border-[#1A1A1A] pl-4">Technical Fingerprint</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-0.5 bg-[#1A1A1A]/10 border border-[#1A1A1A]/10">
                 <AuditBox 
-                  label="Syntax Integrity" 
+                  label="Bonne syntaxe" 
                   value="Format" 
                   status={result?.syntax ? "Pass" : result ? "Fail" : "Wait"} 
                 />
                 <AuditBox 
-                  label="MX Record Presence" 
-                  value="Domain" 
+                  label="Domaine valide" 
+                  value="Domaine" 
                   status={result?.domain ? "Active" : result ? "Lost" : "Wait"} 
                 />
                 <AuditBox 
-                  label="Identity Auth" 
-                  value="Secure" 
+                  label="Identification unique" 
+                  value="Securisé" 
                   status={result?.valid ? "High" : result ? "Low" : "Wait"} 
                 />
               </div>
