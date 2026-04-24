@@ -1,0 +1,6 @@
+{
+  "name": "VerifEmail & Profil Finder",
+  "description": "Vérification d'email avancée (MX, jetable, score) et recherche de profils LinkedIn associée.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

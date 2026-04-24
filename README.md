@@ -1,0 +1,83 @@
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+<h1>Insight Engine</h1>
+<p>Vérification d'adresse email & recherche de profil LinkedIn par IA</p>
+
+![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=flat-square&logo=vite&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white) ![Framer Motion](https://img.shields.io/badge/Motion-0055FF?style=flat-square&logo=framer&logoColor=white) ![Express](https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) ![Gemini](https://img.shields.io/badge/Gemini_2.0-8E75B2?style=flat-square&logo=googlegemini&logoColor=white) ![DeepSeek](https://img.shields.io/badge/DeepSeek-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)
+
+</div>
+
+---
+
+## Sujet
+
+**Insight Engine** est une application full-stack qui permet d'analyser une adresse email selon deux axes :
+
+- **Vérification technique** : validation du format, résolution des enregistrements MX via DNS, détection des domaines jetables — avec un score de confiance de 0 à 100.
+- **Recherche de profil LinkedIn** : utilise l'API Gemini (Google Search grounding) pour identifier le profil LinkedIn réel associé à l'email, sans spéculation ni profil inventé.
+
+---
+
+## Stack technique
+
+| Couche | Technologie |
+|--------|-------------|
+| Frontend | React 19, TypeScript, Tailwind CSS v4, Motion (Framer) |
+| Backend | Express.js, Node.js, tsx |
+| Build | Vite 6 |
+| IA frontend | Google Gemini 2.0 Flash + Google Search grounding |
+| IA backend | DeepSeek API (fallback) |
+| Vérification email | Node.js `dns.resolveMx` |
+| Icônes | Lucide React |
+
+---
+
+## Arborescence
+
+```
+proj-verifemail-&-profil-finder/
+├── src/
+│   ├── App.tsx          # Interface React principale
+│   ├── main.tsx         # Point d'entrée React
+│   ├── index.css        # Styles globaux
+│   └── vite-env.d.ts    # Types Vite (import.meta.env)
+├── public/
+│   └── asset/           # Assets statiques
+├── .env.local           # Variables d'environnement (clés API)
+├── .gitignore
+├── index.html
+├── package.json
+├── server.ts            # Serveur Express (vérification email + proxy IA)
+├── tsconfig.json
+└── vite.config.ts
+```
+
+---
+
+## Installation
+
+**Prérequis :** Node.js 18+
+
+```bash
+npm install
+```
+
+Configurer les clés API dans `.env.local` :
+
+```env
+VITE_GEMINI_API_KEY=   # https://aistudio.google.com/apikey
+AI_API_KEY=            # https://platform.deepseek.com (optionnel)
+```
+
+```bash
+npm run dev
+```
+
+L'application est disponible sur `http://localhost:3000`.
+
+---
+
+<div align="center">
+  <sub>Avril 2026</sub>
+</div>
