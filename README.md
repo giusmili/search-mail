@@ -1,5 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 
 <h1>Insight Engine</h1>
 <p>Vérification d'adresse email & recherche de profil LinkedIn par IA</p>
@@ -66,8 +64,9 @@ npm install
 Configurer les clés API dans `.env.local` :
 
 ```env
-VITE_GEMINI_API_KEY=   # https://aistudio.google.com/apikey
-AI_API_KEY=            # https://platform.deepseek.com (optionnel)
+AI_API_KEY=xxxxxxxxxxxxxxxxxxxxx
+AI_API_URL=xxxxxxxxxxxxxxxxxxxx
+AI_MODEL
 ```
 
 ```bash
