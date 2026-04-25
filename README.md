@@ -91,7 +91,7 @@ L'application est disponible sur un port `http://localhost:3000`.
                 → retourne les profils LinkedIn correspondants
                 → réponse JSON : tableau de profils ou { profiles: [] }
 
-  Variables d'env nécessaires (server.ts:146-149) :
+  /*Variables d'env nécessaires (server.ts:146-149) : */
   - SERPER_API_KEY — sans elle, retourne { profiles: [], serperMissing: true } immédiatement
   - AI_API_KEY — clé pour l'IA (DeepSeek ou autre)
   - AI_API_URL — URL de l'API IA (défaut: https://api.deepseek.com/v1/chat/completions)
