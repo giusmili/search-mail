@@ -64,8 +64,8 @@ npm install
 Configurer les clés API dans `.env.local` :
 
 ```env
-AI_API_KEY=xxxxxxxxxxxxxxxxxxxxx
-AI_API_URL=xxxxxxxxxxxxxxxxxxxx
+AI_API_KEY=*******************
+AI_API_URL=*******************
 AI_MODEL
 ```
 
