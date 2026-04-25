@@ -16,7 +16,7 @@ async function startServer() {
 
   app.use(express.json());
 
-  // Email verification endpoint
+  // Email verification endpoint app
   app.post("/api/verify-email", async (req, res) => {
     const { email } = req.body;
 

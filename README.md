@@ -76,6 +76,27 @@ npm run dev
 L'application est disponible sur un port `http://localhost:3000`.
 
 ---
+## Voici le chemin complet de la promise :                                                                         
+```js                                                                                                                 
+  /api/search-profiles est géré dans server.ts:108 par un serveur Express. Le flux est le suivant :               
+                                                                                                                  
+  App.tsx (fetch POST /api/search-profiles)                                                                       
+    └─> server.ts:108 (route Express)                                                                             
+          ├─ 1. Appel Serper API (Google Search) — 2 requêtes parallèles :                                        
+          │     ├─ `"<email>" site:linkedin.com`  → résultats LinkedIn
+          │     └─ `"<email>"`                     → résultats web généraux
+          │
+          └─ 2. Appel AI API (DeepSeek par défaut, configurable via .env)
+                → analyse les URLs/snippets trouvés par Serper
+                → retourne les profils LinkedIn correspondants
+                → réponse JSON : tableau de profils ou { profiles: [] }
+
+  Variables d'env nécessaires (server.ts:146-149) :
+  - SERPER_API_KEY — sans elle, retourne { profiles: [], serperMissing: true } immédiatement
+  - AI_API_KEY — clé pour l'IA (DeepSeek ou autre)
+  - AI_API_URL — URL de l'API IA (défaut: https://api.deepseek.com/v1/chat/completions)
+  - AI_MODEL — modèle à utiliser (défaut: deepseek-chat)
+```
 
 <div align="center">
   <sub>Avril 2026</sub>
